@@ -36,10 +36,10 @@ pomExtra :=
 
 lazy val commonSettings = Seq(
   organization := "com.github.bruneli.phyqty",
-  scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.6", "2.11.8")
+  scalaVersion := "2.12.1",
+  crossScalaVersions := Seq("2.10.6", "2.11.9", "2.12.1")
 )
 
-lazy val root = project.in(file(".")).settings(commonSettings: _*)
+lazy val phyqty = project.in(file(".")).settings(commonSettings: _*)
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1"
