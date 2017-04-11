@@ -152,6 +152,10 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     Quantities(magnitudes.map(x => anotherUnit.converter.inverse(x, unit.converter)), anotherUnit)
   }
 
+  override def diff(offset: Int): Quantities[D] = {
+    view.diff(offset).force
+  }
+
 }
 
 object Quantities {

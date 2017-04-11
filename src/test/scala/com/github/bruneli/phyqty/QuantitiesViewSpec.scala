@@ -20,6 +20,8 @@ import org.scalatest.{FlatSpec, Matchers}
 import PhyUnit._
 import Quantity._
 
+import scala.collection.SeqView
+
 /**
   * @author bruneli
   */
@@ -174,6 +176,20 @@ class QuantitiesViewSpec extends FlatSpec with Matchers {
     subset.length shouldBe 2
     subset(0) shouldBe 9(m)
     subset(1) shouldBe 6(m)
+
+  }
+
+  "map" should "transform quantities into a view sequence" in {
+
+    val length = Quantities(4(m), 2(m), 5(m)).view
+    val deltaT = 2(s)
+    val speed = length.map(_ / deltaT)
+
+    speed shouldBe a[SeqView[_, _]]
+    speed.length shouldBe 3
+    speed(0).magnitude shouldBe 2.0 +- 1.0e-6
+    speed(1).magnitude shouldBe 1.0 +- 1.0e-6
+    speed(2).magnitude shouldBe 2.5 +- 1.0e-6
 
   }
 

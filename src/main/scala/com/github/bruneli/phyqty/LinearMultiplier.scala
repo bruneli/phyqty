@@ -35,5 +35,6 @@ case class LinearMultiplier(symbol: String, multiplier: Double) extends LinearTr
 object LinearMultiplier {
 
   val sixtyTimes = LinearMultiplier("", 60.0)
+  val twentyFourTimes = LinearMultiplier("", 24.0)
 
 }

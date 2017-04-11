@@ -80,10 +80,8 @@ object Exponent {
   type +[L <: Exponent, R <: Exponent] = L#PLUS[R]
   type -[L <: Exponent, R <: Exponent] = L#MINUS[R]
 
-  sealed trait MinusTen extends NegativeExponent[Ten, MinusTen, MinusNine]
-  sealed trait MinusNine extends NegativeExponent[Nine, MinusTen, MinusEight]
-  sealed trait MinusEight extends NegativeExponent[Eight, MinusNine, MinusEight]
-  sealed trait MinusSeven extends NegativeExponent[Seven, MinusEight, MinusSix]
+  // Limited to +- seven exponents for sbt compilation reasons (stackoverflow)
+  sealed trait MinusSeven extends NegativeExponent[Seven, MinusSeven, MinusSix]
   sealed trait MinusSix extends NegativeExponent[Six, MinusSeven, MinusFive]
   sealed trait MinusFive extends NegativeExponent[Five, MinusSix, MinusFour]
   sealed trait MinusFour extends NegativeExponent[Four, MinusFive, MinusThree]
@@ -97,15 +95,9 @@ object Exponent {
   sealed trait Four extends PositiveExponent[MinusFour, Three, Five]
   sealed trait Five extends PositiveExponent[MinusFive, Four, Six]
   sealed trait Six extends PositiveExponent[MinusSix, Five, Seven]
-  sealed trait Seven extends PositiveExponent[MinusSeven, Six, Eight]
-  sealed trait Eight extends PositiveExponent[MinusEight, Seven, Nine]
-  sealed trait Nine extends PositiveExponent[MinusNine, Eight, Ten]
-  sealed trait Ten extends PositiveExponent[MinusTen, Nine, Ten]
+  sealed trait Seven extends PositiveExponent[MinusSeven, Six, Seven]
 
   case class ExponentToInt[E <: Exponent](exponent: Int) extends AnyVal
-  implicit val minusTen = ExponentToInt[MinusTen](-10)
-  implicit val minusNine = ExponentToInt[MinusNine](-9)
-  implicit val minusEight = ExponentToInt[MinusEight](-8)
   implicit val minusSeven = ExponentToInt[MinusSeven](-7)
   implicit val minusSix = ExponentToInt[MinusSix](-6)
   implicit val minusFive = ExponentToInt[MinusFive](-5)
@@ -121,9 +113,6 @@ object Exponent {
   implicit val five = ExponentToInt[Five](5)
   implicit val six = ExponentToInt[Six](6)
   implicit val seven = ExponentToInt[Seven](7)
-  implicit val eight = ExponentToInt[Eight](8)
-  implicit val nine = ExponentToInt[Nine](9)
-  implicit val ten = ExponentToInt[Ten](10)
 
   def exponent[E <: Exponent](implicit exponentToInt: ExponentToInt[E]): Int = {
     exponentToInt.exponent

@@ -62,6 +62,30 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
+  ":+" should "append a new Quantity" in {
+
+    val quantities = Quantities(3(m), 2(cm)) :+ 6(mm)
+
+    quantities shouldBe a[Quantities[_]]
+    quantities.length shouldBe 3
+    quantities(0) shouldBe 3(m)
+    quantities(1) shouldBe 2(cm)
+    quantities(2) shouldBe 6(mm)
+
+  }
+
+  "+:" should "prepend a new Quantity" in {
+
+    val quantities = 6(mm) +: Quantities(3(m), 2(cm))
+
+    quantities shouldBe a[Quantities[_]]
+    quantities.length shouldBe 3
+    quantities(0) shouldBe 6(mm)
+    quantities(1) shouldBe 3(m)
+    quantities(2) shouldBe 2(cm)
+
+  }
+
   "+" should "perform an element wise addition of two list of quantities" in {
 
     val q1 = Quantities(2(m), 7(m))
@@ -199,6 +223,21 @@ class QuantitiesSpec extends FlatSpec with Matchers {
     length.length shouldBe 2
     length.magnitudes(0) shouldBe 300.0 +- 1.0e-6
     length.magnitudes(1) shouldBe 600.0 +- 1.0e-6
+
+  }
+
+  "diff(2)" should "evaluate the difference between quantities separated by 2 indexes" in {
+
+    val length = Quantities(3(m), 6(m), 9(m), 6(m), 3(m))
+    val step = length.diff(2)
+
+    step shouldBe a[Quantities[_]]
+    step.length shouldBe 5
+    step.magnitude(0).isNaN shouldBe true
+    step.magnitude(1).isNaN shouldBe true
+    step.magnitude(2) shouldBe 6.0 +- 1.0e-6
+    step.magnitude(3) shouldBe 0.0 +- 1.0e-6
+    step.magnitude(4) shouldBe -6.0 +- 1.0e-6
 
   }
 

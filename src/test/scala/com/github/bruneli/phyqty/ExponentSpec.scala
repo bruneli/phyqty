@@ -26,9 +26,6 @@ class ExponentSpec extends FlatSpec with Matchers {
 
   "exponent" should "return the exponent as an integer" in {
 
-    exponent[MinusTen] shouldBe -10
-    exponent[MinusNine] shouldBe -9
-    exponent[MinusEight] shouldBe -8
     exponent[MinusSeven] shouldBe -7
     exponent[MinusSix] shouldBe -6
     exponent[MinusFive] shouldBe -5
@@ -44,9 +41,6 @@ class ExponentSpec extends FlatSpec with Matchers {
     exponent[Five] shouldBe 5
     exponent[Six] shouldBe 6
     exponent[Seven] shouldBe 7
-    exponent[Eight] shouldBe 8
-    exponent[Nine] shouldBe 9
-    exponent[Ten] shouldBe 10
 
   }
 
@@ -112,9 +106,9 @@ class ExponentSpec extends FlatSpec with Matchers {
 
   }
 
-  "-6 + (-2)" should "be -8" in {
+  "-5 + (-2)" should "be -7" in {
 
-    exponent[MinusSix + MinusTwo] shouldBe -8
+    exponent[MinusFive + MinusTwo] shouldBe -7
 
   }
 

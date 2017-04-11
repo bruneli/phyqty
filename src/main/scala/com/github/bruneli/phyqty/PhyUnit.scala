@@ -67,18 +67,27 @@ object PhyUnit {
   val second, s = PhyUnit[Time]("s")
   val kelvin, K = PhyUnit[Temperature]("K")
   val mole, mol = PhyUnit[AmountOfSubstance]("mol")
-  val ampere, A = PhyUnit[ElectricCurrent]("I")
+  val ampere, A = PhyUnit[ElectricCurrent]("A")
   val candela, cd = PhyUnit[LuminousIntensity]("cd")
 
   val hertz, Hz = PhyUnit[Frequency]("Hz")
-  val Becquerel, Bq = PhyUnit[RadioactiveActivity]("Bq")
+  val becquerel, Bq = PhyUnit[RadioactiveActivity]("Bq")
+  val gray, Gy = PhyUnit[RadioactiveDose]("Gy")
+  val lumen, lm = PhyUnit[LuminousFlux]("lm")
+  val lux, lx = PhyUnit[Illuminance]("lx")
+  val katal = PhyUnit[CatalyticActivity]("katal")
   val newton, N = PhyUnit[Force]("N")
   val pascal, Pa = PhyUnit[Pressure]("Pa")
   val joule, J = PhyUnit[Energy]("J")
   val watt, W = PhyUnit[Power]("W")
   val coulomb, C = PhyUnit[ElectricCharge]("C")
   val volt, V = PhyUnit[ElectricPotential]("V")
+  val farad, F = PhyUnit[Capacitance]("F")
   val ohm = PhyUnit[ElectricalResistance]("ohm")
+  val siemens, S = PhyUnit[ElectricalConductance]("S")
+  val tesla, T = PhyUnit[MagneticField]("T")
+  val weber, Wb = PhyUnit[MagneticFlux]("Wb")
+  val henry, H = PhyUnit[Inductance]("H")
 
   // Units derived from meter
   val nanometre, nm = nano(metre)
@@ -98,6 +107,7 @@ object PhyUnit {
   val millisecond, ms = milli(second)
   val minute, min = sixtyTimes(second).named("min")
   val hour, h = sixtyTimes(minute).named("h")
+  val day = twentyFourTimes(hour).named("day")
 
   // Temperature units
   val degC, degreeCelsius = PhyUnit[Temperature]("degC", AffineTransform("", 1.0, 273.15))

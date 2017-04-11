@@ -33,7 +33,7 @@ sealed trait DimensionExponents {
 
   type TEMPERATURE <: Exponent
 
-  type SUBSTANCE_AMOUNT <: Exponent
+  type AMOUNT_OF_SUBSTANCE <: Exponent
 
   type CURRENT <: Exponent
 
@@ -67,7 +67,7 @@ class Dimension[L <: Exponent, M <: Exponent, T <: Exponent, K <: Exponent, N <:
 
   type TEMPERATURE = K
 
-  type SUBSTANCE_AMOUNT = N
+  type AMOUNT_OF_SUBSTANCE = N
 
   type CURRENT = I
 
@@ -78,7 +78,7 @@ class Dimension[L <: Exponent, M <: Exponent, T <: Exponent, K <: Exponent, N <:
     MASS + D#MASS,
     TIME + D#TIME,
     TEMPERATURE + D#TEMPERATURE,
-    SUBSTANCE_AMOUNT + D#SUBSTANCE_AMOUNT,
+    AMOUNT_OF_SUBSTANCE + D#AMOUNT_OF_SUBSTANCE,
     CURRENT + D#CURRENT,
     LUMINOSITY + D#LUMINOSITY]
 
@@ -87,7 +87,7 @@ class Dimension[L <: Exponent, M <: Exponent, T <: Exponent, K <: Exponent, N <:
     MASS - D#MASS,
     TIME - D#TIME,
     TEMPERATURE - D#TEMPERATURE,
-    SUBSTANCE_AMOUNT - D#SUBSTANCE_AMOUNT,
+    AMOUNT_OF_SUBSTANCE - D#AMOUNT_OF_SUBSTANCE,
     CURRENT - D#CURRENT,
     LUMINOSITY - D#LUMINOSITY]
 
@@ -102,7 +102,7 @@ object Dimension {
   type PlaneAngle = DimensionLess
   type SolidAngle = DimensionLess
 
-  // Base quantity
+  // SI base quantities
   type Length = Dimension[One, Zero, Zero, Zero, Zero, Zero, Zero]
   type Mass = Dimension[Zero, One, Zero, Zero, Zero, Zero, Zero]
   type Time = Dimension[Zero, Zero, One, Zero, Zero, Zero, Zero]
@@ -118,11 +118,14 @@ object Dimension {
   type AngularSpeed = PlaneAngle / Time
   type AngularAcceleration = AngularSpeed / Time
   type RadioactiveActivity = DimensionLess / Time
+  type LuminousFlux = LuminousIntensity x SolidAngle
 
   // Derived quantity built from two base quantities
   type Speed = Length / Time
   type Acceleration = Speed / Time
   type ElectricCharge = ElectricCurrent x Time
+  type CatalyticActivity = AmountOfSubstance / Time
+  type Illuminance = LuminousFlux / Area
 
   // Derived quantity built from three base quantities
   type Momentum = Mass x Speed
@@ -130,15 +133,21 @@ object Dimension {
   type Pressure = Force / Area
   type Energy = Force x Length
   type Power = Energy / Time
+  type RadioactiveDose = Energy / Mass
 
   // Derived quantity built from four or more base quantities
   type Entropy = Energy / Temperature
   type ElectricField = Force / ElectricCharge
   type ElectricPotential = ElectricField x Length
+  type Capacitance = ElectricCharge / ElectricPotential
   type ElectricalResistance = ElectricPotential / ElectricCurrent
+  type ElectricalConductance = DimensionLess / ElectricalResistance
+  type MagneticField = Force / ElectricCharge / Speed
+  type MagneticFlux = MagneticField x Area
+  type Inductance = MagneticFlux / ElectricCurrent
 
-  def dimensionVector[D <: DimensionExponents](implicit lengthToInt: ExponentToInt[D#LENGTH], massToInt: ExponentToInt[D#MASS], timeToInt: ExponentToInt[D#TIME], temperatureToInt: ExponentToInt[D#TEMPERATURE], amountOfSubstanceToInt: ExponentToInt[D#SUBSTANCE_AMOUNT], electricCurrentToInt: ExponentToInt[D#CURRENT], luminousIntensityToInt: ExponentToInt[D#LUMINOSITY]): Vector[Int] = {
-    Vector(exponent[D#LENGTH], exponent[D#MASS], exponent[D#TIME], exponent[D#TEMPERATURE], exponent[D#SUBSTANCE_AMOUNT], exponent[D#CURRENT], exponent[D#LUMINOSITY])
+  def dimensionVector[D <: DimensionExponents](implicit lengthToInt: ExponentToInt[D#LENGTH], massToInt: ExponentToInt[D#MASS], timeToInt: ExponentToInt[D#TIME], temperatureToInt: ExponentToInt[D#TEMPERATURE], amountOfSubstanceToInt: ExponentToInt[D#AMOUNT_OF_SUBSTANCE], electricCurrentToInt: ExponentToInt[D#CURRENT], luminousIntensityToInt: ExponentToInt[D#LUMINOSITY]): Vector[Int] = {
+    Vector(exponent[D#LENGTH], exponent[D#MASS], exponent[D#TIME], exponent[D#TEMPERATURE], exponent[D#AMOUNT_OF_SUBSTANCE], exponent[D#CURRENT], exponent[D#LUMINOSITY])
   }
 
 }

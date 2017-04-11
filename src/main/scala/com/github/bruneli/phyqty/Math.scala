@@ -23,12 +23,44 @@ import Dimension.DimensionLess
   */
 object Math {
 
+  def ceil[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]): Quantity[D] = {
+    applyFunction(quantity, math.ceil)
+  }
+
+  def ceil[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D]): QuantitiesLike[D] = {
+    quantities.mapMagnitudes(math.ceil)
+  }
+
+  def floor[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]): Quantity[D] = {
+    applyFunction(quantity, math.floor)
+  }
+
+  def floor[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D]): QuantitiesLike[D] = {
+    quantities.mapMagnitudes(math.floor)
+  }
+
   def abs[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]): Quantity[D] = {
     applyFunction(quantity, math.abs)
   }
 
   def abs[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D]): QuantitiesLike[D] = {
     quantities.mapMagnitudes(math.abs)
+  }
+
+  def sqrt(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.sqrt)
+  }
+
+  def sqrt(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.sqrt)
+  }
+
+  def cbrt(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.cbrt)
+  }
+
+  def cbrt(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.cbrt)
   }
 
   def exp(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
@@ -77,6 +109,54 @@ object Math {
 
   def tan(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
     quantities.mapMagnitudes(math.tan)
+  }
+
+  def asin(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.asin)
+  }
+
+  def asin(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.asin)
+  }
+
+  def acos(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.acos)
+  }
+
+  def acos(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.acos)
+  }
+
+  def atan(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.atan)
+  }
+
+  def atan(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.atan)
+  }
+
+  def sinh(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.sinh)
+  }
+
+  def sinh(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.sinh)
+  }
+
+  def cosh(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.cosh)
+  }
+
+  def cosh(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.cosh)
+  }
+
+  def tanh(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+    applyFunction(quantity, math.tanh)
+  }
+
+  def tanh(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
+    quantities.mapMagnitudes(math.tanh)
   }
 
   def applyFunction[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D], function: Double => Double): Quantity[D] = {

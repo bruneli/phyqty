@@ -130,6 +130,12 @@ trait QuantitiesView[D <: Dimension[_, _, _, _, _, _, _], Coll] extends IndexedS
     }
   }
 
+  override def diff(idx: Int): QuantitiesView[D, Quantities[D]] = {
+    new DiffOperation {
+      override val offset = idx
+    }
+  }
+
   protected override def newFiltered(p: Quantity[D] => Boolean): Transformed[D] = {
     new { val pred = p } with AbstractTransformed[D] with Filtered
   }
@@ -242,6 +248,18 @@ trait QuantitiesView[D <: Dimension[_, _, _, _, _, _, _], Coll] extends IndexedS
     }
   }
 
+  trait DiffOperation extends QuantitiesOperation[D] {
+    val unit = self.unit
+    val offset: Int
+    override def magnitude(idx: Int) = {
+      if (offset > 0 && idx < offset || offset < 0 && idx > length - offset) {
+        Double.NaN
+      } else {
+        self.magnitude(idx) - self.magnitude(idx - offset)
+      }
+    }
+  }
+
   trait Sliced extends super.Sliced with Transformed[D] {
     override def length = endpoints.width
     val unit = self.unit
@@ -275,24 +293,29 @@ trait QuantitiesView[D <: Dimension[_, _, _, _, _, _, _], Coll] extends IndexedS
     override def magnitude(idx: Int) = self.magnitude(self.length - 1 - idx)
   }
 
-  trait Mapped[DD <: Dimension[_, _, _, _, _, _, _]] extends super.Mapped[Quantity[DD]] with Transformed[DD] {
-    lazy val unit = mapping(self(0)).unit
-    override def apply(idx: Int): Quantity[DD] = mapping(self(idx))
-    override def magnitude(idx: Int) = apply(idx).magnitude
-  }
-
 }
 
 object QuantitiesView {
   type Coll = TraversableView[_, C] forSome {type C <: Traversable[_]}
-  implicit def canBuildFrom[A <: Dimension[_, _, _, _, _, _, _]]: CanBuildFrom[Coll, Quantity[A], QuantitiesView[A, Quantities[A]]] =
-    new CanBuildFrom[Coll, Quantity[A], QuantitiesView[A, Quantities[A]]] {
+  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, SeqView[A, Seq[_]]] =
+    new CanBuildFrom[Coll, A, SeqView[A, Seq[_]]] {
       def apply(from: Coll) = new NoBuilder
       def apply() = new NoBuilder
     }
-  implicit def arrCanBuildFrom[A <: Dimension[_, _, _, _, _, _, _]]: CanBuildFrom[TraversableView[_, Array[_]], Quantity[A], QuantitiesView[A, Quantities[A]]] =
-    new CanBuildFrom[TraversableView[_, Array[_]], Quantity[A], QuantitiesView[A, Quantities[A]]] {
+  implicit def arrCanBuildFrom[A]: CanBuildFrom[TraversableView[_, Array[_]], A, SeqView[A, Array[A]]] =
+    new CanBuildFrom[TraversableView[_, Array[_]], A, SeqView[A, Array[A]]] {
       def apply(from: TraversableView[_, Array[_]]) = new NoBuilder
       def apply() = new NoBuilder
     }
+//  type Coll = TraversableView[_, C] forSome {type C <: Traversable[_]}
+//  implicit def canBuildFrom[A <: Dimension[_, _, _, _, _, _, _]]: CanBuildFrom[Coll, Quantity[A], QuantitiesView[A, Quantities[A]]] =
+//    new CanBuildFrom[Coll, Quantity[A], QuantitiesView[A, Quantities[A]]] {
+//      def apply(from: Coll) = new NoBuilder
+//      def apply() = new NoBuilder
+//    }
+//  implicit def arrCanBuildFrom[A <: Dimension[_, _, _, _, _, _, _]]: CanBuildFrom[TraversableView[_, Array[_]], Quantity[A], QuantitiesView[A, Quantities[A]]] =
+//    new CanBuildFrom[TraversableView[_, Array[_]], Quantity[A], QuantitiesView[A, Quantities[A]]] {
+//      def apply(from: TraversableView[_, Array[_]]) = new NoBuilder
+//      def apply() = new NoBuilder
+//    }
 }
