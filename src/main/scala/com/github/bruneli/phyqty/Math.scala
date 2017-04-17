@@ -159,8 +159,40 @@ object Math {
     quantities.mapMagnitudes(math.tanh)
   }
 
+  def max[D <: Dimension[_, _, _, _, _, _, _]](q1: Quantity[D], q2: Quantity[D]): Quantity[D] = {
+    val q3 = q2.in(q1.unit)
+    q1.copy(magnitude = math.max(q1.magnitude, q3.magnitude))
+  }
+
+  def max[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D], q2: QuantitiesLike[D]): QuantitiesLike[D] = {
+    applyArity2Function(q1, q2)(math.max)
+  }
+
+  def min[D <: Dimension[_, _, _, _, _, _, _]](q1: Quantity[D], q2: Quantity[D]): Quantity[D] = {
+    val q3 = q2.in(q1.unit)
+    q1.copy(magnitude = math.min(q1.magnitude, q3.magnitude))
+  }
+
+  def min[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D], q2: QuantitiesLike[D]): QuantitiesLike[D] = {
+    applyArity2Function(q1, q2)(math.min)
+  }
+
   def applyFunction[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D], function: Double => Double): Quantity[D] = {
     Quantity(function(quantity.magnitude), quantity.unit)
+  }
+
+  def applyArity2Function[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D], q2: QuantitiesLike[D])(
+    function: (Double, Double) => Double): Quantities[D] = {
+    if (q1.length != q2.length) {
+      throw new Quantities.QuantitiesDimensionException
+    } else {
+      val q3 = q2.in(q1.unit)
+      val magnitudes = new Array[Double](q1.length)
+      for (idx <- magnitudes.indices) {
+        magnitudes(idx) = function(q1.magnitude(idx), q3.magnitude(idx))
+      }
+      Quantities(magnitudes, q1.unit)
+    }
   }
 
 }

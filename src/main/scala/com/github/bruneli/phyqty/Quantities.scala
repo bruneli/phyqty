@@ -54,9 +54,13 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
   override def view = new QuantitiesView[D, Quantities[D]] {
     val unit = self.unit
     protected lazy val underlying = self.repr
+
     override def iterator = self.iterator
+
     override def length = self.length
+
     override def magnitude(idx: Int) = self.magnitudes(idx)
+
     override def apply(idx: Int) = self.apply(idx)
   }
 
@@ -68,7 +72,7 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     super[QuantitiesLike].sum
   }
 
-  override def + (that: QuantitiesLike[D]): Quantities[D] = {
+  override def +(that: QuantitiesLike[D]): Quantities[D] = {
     if (this.length == that.length) {
       val uniformize: Double => Double = converter(that.unit)
       val diff = new Array[Double](this.length)
@@ -81,12 +85,12 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     }
   }
 
-  override def + (that: Quantity[D]): Quantities[D] = {
+  override def +(that: Quantity[D]): Quantities[D] = {
     val constant = converter(that.unit)(that.magnitude)
     Quantities(magnitudes.map(_ + constant), unit)
   }
 
-  override def - (that: QuantitiesLike[D]): Quantities[D] = {
+  override def -(that: QuantitiesLike[D]): Quantities[D] = {
     if (this.length == that.length) {
       val uniformize: Double => Double = converter(that.unit)
       val diff = new Array[Double](this.length)
@@ -99,7 +103,7 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     }
   }
 
-  override def - (that: Quantity[D]): Quantities[D] = {
+  override def -(that: Quantity[D]): Quantities[D] = {
     val constant = converter(that.unit)(that.magnitude)
     Quantities(magnitudes.map(_ - constant), unit)
   }
@@ -108,7 +112,7 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     Quantities(magnitudes.map(x => -x), unit)
   }
 
-  override def * [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantities[D x DD] = {
+  override def *[DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantities[D x DD] = {
     if (this.length == that.length) {
       val prod = new Array[Double](this.length)
       for (idx <- magnitudes.indices) {
@@ -120,15 +124,15 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     }
   }
 
-  override def * [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantities[D x DD] = {
+  override def *[DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantities[D x DD] = {
     Quantities(magnitudes.map(_ * that.magnitude), this.unit * that.unit)
   }
 
-  override def * (scalar: Double): Quantities[D] = {
+  override def *(scalar: Double): Quantities[D] = {
     Quantities(magnitudes.map(_ * scalar), unit)
   }
 
-  override def / [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantities[D / DD] = {
+  override def /[DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantities[D / DD] = {
     if (this.length == that.length) {
       val ratio = new Array[Double](this.length)
       for (idx <- magnitudes.indices) {
@@ -140,11 +144,11 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     }
   }
 
-  override def / [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantities[D / DD] = {
+  override def /[DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantities[D / DD] = {
     Quantities(magnitudes.map(_ / that.magnitude), this.unit / that.unit)
   }
 
-  override def / (scalar: Double): Quantities[D] = {
+  override def /(scalar: Double): Quantities[D] = {
     Quantities(magnitudes.map(_ / scalar), unit)
   }
 
@@ -170,6 +174,16 @@ object Quantities {
     }
   }
 
+  def fill[D <: Dimension[_, _, _, _, _, _, _]](n: Int)(elem: => Quantity[D]): Quantities[D] = {
+    Quantities(Array.fill(n)(elem.magnitude), elem.unit)
+  }
+
+  def iterate[D <: Dimension[_, _, _, _, _, _, _]](start: Quantity[D], len: Int)(
+    f: Quantity[D] => Quantity[D]): Quantities[D] = {
+    val magnitudes = Array.iterate(start.magnitude, len)(previous => f(Quantity(previous, start.unit)).magnitude)
+    Quantities(magnitudes, start.unit)
+  }
+
   def fromVector[D <: Dimension[_, _, _, _, _, _, _]](quantities: Vector[Quantity[D]]): Quantities[D] = {
     if (quantities.isEmpty) {
       Quantities(Array.emptyDoubleArray, PhyUnit[D]("a.u."))
@@ -190,6 +204,7 @@ object Quantities {
   implicit def canBuildFrom[D <: Dimension[_, _, _, _, _, _, _]]: CanBuildFrom[Quantities[_], Quantity[D], Quantities[D]] = {
     new CanBuildFrom[Quantities[_], Quantity[D], Quantities[D]] {
       def apply(from: Quantities[_]) = newBuilder[D]
+
       def apply() = newBuilder[D]
     }
   }

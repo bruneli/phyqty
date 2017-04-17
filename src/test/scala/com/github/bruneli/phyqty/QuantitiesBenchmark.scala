@@ -35,8 +35,8 @@ object QuantitiesBenchmark extends App {
   }
 
   def vectorAdditionBenchmark(size: Int, trials: Int): Unit = {
-    val q1 = Quantities(Array.fill(size)(2.0), metre)
-    val q2 = Quantities(Array.fill(size)(3.0), metre)
+    val q1 = Quantities.fill(size)(2.0 (m))
+    val q2 = Quantities.fill(size)(3.0 (m))
     val quantitiesMillis = performanceEstimate(quantitiesAddition(q1, q2), trials = trials, warmupTrials = trials)
     println(s"Adding two quantities collections of $size elements took in average $quantitiesMillis milliseconds in average")
     val q3 = Vector.fill(size)(2.0 (m))
@@ -55,15 +55,15 @@ object QuantitiesBenchmark extends App {
   }
 
   def chainOfOperationsBenchmark(size: Int, trials: Int): Unit = {
-    val position = Quantities(Range(0, size).map(_.toDouble).toArray, metre)
-    val time = Quantities(Range(0, size).map(_.toDouble).toArray, second)
+    val positions = Quantities.iterate(0 (m), size)(_ + 1(m))
+    val timestamps = Quantities.iterate(0 (s), size)(_ + 1(s))
     val speed = 1 (m / s)
     val offset = 0 (m)
     val sigma = 20 (cm)
-    val quantitiesMillis = performanceEstimate(leastSquaresSum(position, time, speed, offset, sigma), trials = trials,
+    val quantitiesMillis = performanceEstimate(leastSquaresSum(positions, timestamps, speed, offset, sigma), trials = trials,
       warmupTrials = trials)
     println(s"Chaining operations with quantities of $size elements took in average $quantitiesMillis milliseconds in average")
-    val quantitiesViewMillis = performanceEstimate(leastSquaresSum(position.view, time.view, speed, offset, sigma),
+    val quantitiesViewMillis = performanceEstimate(leastSquaresSum(positions.view, timestamps.view, speed, offset, sigma),
       trials = trials, warmupTrials = trials)
     println(s"Chaining operations with quantities views of $size elements took in average $quantitiesViewMillis milliseconds in average")
     //val vectorMillis = performanceEstimate(vectorLeastSquaresSum(position.toVector, time.toVector, speed, offset, sigma),
