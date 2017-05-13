@@ -160,6 +160,10 @@ trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantit
     view.diff(offset).force
   }
 
+  override def dropna: Quantities[D] = {
+    Quantities(magnitudes.filterNot(_.isNaN), unit)
+  }
+
 }
 
 object Quantities {

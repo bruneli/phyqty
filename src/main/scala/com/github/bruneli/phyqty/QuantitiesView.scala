@@ -136,6 +136,10 @@ trait QuantitiesView[D <: Dimension[_, _, _, _, _, _, _], Coll] extends IndexedS
     }
   }
 
+  override def dropna: This = {
+    newFiltered((q: Quantity[D]) => !q.magnitude.isNaN)
+  }
+
   protected override def newFiltered(p: Quantity[D] => Boolean): Transformed[D] = {
     new { val pred = p } with AbstractTransformed[D] with Filtered
   }

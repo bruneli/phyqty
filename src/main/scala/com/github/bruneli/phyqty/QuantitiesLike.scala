@@ -59,6 +59,8 @@ trait QuantitiesLike[D <: Dimension[_, _, _, _, _, _, _]] {
 
   def diff(offset: Int): QuantitiesLike[D]
 
+  def dropna: QuantitiesLike[D]
+
   def dot [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantity[D x DD] = {
     if (this.length == that.length) {
       var sum = 0.0

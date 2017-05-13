@@ -22,19 +22,22 @@ Defining a quantity
 
 Creating custom units
 
+    >>> import com.github.bruneli.phyqty.Quantity._
     >>> import com.github.bruneli.phyqty.PhyUnit._
     >>> import com.github.bruneli.phyqty.DecimalMultiplier._
-    >>> val kW = kilo(Watt)
+    >>> val kW = kilo(watt)
     >>> val kWh = kW * h
+    >>> 1(kWh).in(J)
 
 Working with collection of quantities (measurements)
 
     >>> import com.github.bruneli.phyqty.Quantity._
     >>> import com.github.bruneli.phyqty.PhyUnit._
+    >>> import import com.github.bruneli.phyqty.Quantities
     >>> val measurementPeriod = 100(ms)
     >>> val positions = Quantities(2(m), 3.5(m), 5(m), 10(m))
     >>> val distances = positions.diff(1)
-    >>> val speeds = distances / measurementPeriod
+    >>> val speeds = distances.dropna / measurementPeriod
     >>> val meanSpeed = speeds.mean
     >>> val averageSpeed = (positions.last - positions.head) / (positions.length - 1) / measurementPeriod
 
