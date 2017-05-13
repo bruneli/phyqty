@@ -10,9 +10,33 @@ The objective is twofold
 
 Defining a quantity
 
+    >>> import com.github.bruneli.phyqty.Quantity._
+    >>> import com.github.bruneli.phyqty.PhyUnit._
+    >>> val position = 1.56(m)
+    >>> val time = 2(min)
+    >>> val newPosition = position + 76(cm) + 15(mm)
+    >>> val newTime = time * 2
+    >>> val distance = newPosition - position
+    >>> val duration = newTime - time
+    >>> val speed = distance / duration
+
 Creating custom units
 
+    >>> import com.github.bruneli.phyqty.PhyUnit._
+    >>> import com.github.bruneli.phyqty.DecimalMultiplier._
+    >>> val kW = kilo(Watt)
+    >>> val kWh = kW * h
+
 Working with collection of quantities (measurements)
+
+    >>> import com.github.bruneli.phyqty.Quantity._
+    >>> import com.github.bruneli.phyqty.PhyUnit._
+    >>> val measurementPeriod = 100(ms)
+    >>> val positions = Quantities(2(m), 3.5(m), 5(m), 10(m))
+    >>> val distances = positions.diff(1)
+    >>> val speeds = distances / measurementPeriod
+    >>> val meanSpeed = speeds.mean
+    >>> val averageSpeed = (positions.last - positions.head) / (positions.length - 1) / measurementPeriod
 
 ## Usage
 
