@@ -45,4 +45,16 @@ Working with collection of quantities (measurements)
 
 ### SBT
 
+Add the following dependency to your `build.sbt`
+
+    libraryDependencies += "com.github.bruneli.phyqty" %% "phyqty" % "0.1"
+
 ### Maven
+
+Add the following dependency to your `pom` file
+
+    <dependency>
+        <groupId>com.github.bruneli.phyqty</groupId>
+        <artifactId>phyqty_2.11</artifactId>
+        <version>0.1</version>
+    </dependency>
