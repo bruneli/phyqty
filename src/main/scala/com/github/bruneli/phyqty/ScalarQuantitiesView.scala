@@ -234,7 +234,7 @@ trait ScalarQuantitiesView[D <: Dimension[_, _, _, _, _, _, _], Coll] extends In
     val other: QuantitiesLike[DD, Scalar]
     lazy val unit = self.unit / other.unit
     override def coordinate(i: Int, j: Int): Double = {
-      self.coordinate(i, j) / other.coordinate(i, 0)
+      self.coordinate(i, j) / other.coordinate(0, j)
     }
   }
 
@@ -258,10 +258,10 @@ trait ScalarQuantitiesView[D <: Dimension[_, _, _, _, _, _, _], Coll] extends In
     val unit = self.unit
     val offset: Int
     override def coordinate(i: Int, j: Int): Double = {
-      if (offset > 0 && i < offset || offset < 0 && i > length - offset) {
+      if (offset > 0 && j < offset || offset < 0 && j > length - offset) {
         Double.NaN
       } else {
-        self.coordinate(i, j) - self.coordinate(i - offset, j)
+        self.coordinate(i, j) - self.coordinate(i, j - offset)
       }
     }
   }
