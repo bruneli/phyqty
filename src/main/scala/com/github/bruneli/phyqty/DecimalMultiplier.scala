@@ -34,6 +34,8 @@ case class DecimalMultiplier(symbol: String, exponent: Int) extends LinearTransf
       } else {
         DecimalMultiplier(s"$symbol${that.symbol}", this.exponent + decimal.exponent)
       }
+    case linear: LinearMultiplier =>
+      LinearMultiplier(s"$symbol${that.symbol}", this.value(1.0) * linear.multiplier)
     case _ => ???
   }
 
@@ -46,6 +48,8 @@ case class DecimalMultiplier(symbol: String, exponent: Int) extends LinearTransf
       } else {
         DecimalMultiplier(s"$symbol${that.symbol}", this.exponent - decimal.exponent)
       }
+    case linear: LinearMultiplier =>
+      LinearMultiplier(s"$symbol/${that.symbol}", this.value(1.0) / linear.multiplier)
     case _ => ???
   }
 
