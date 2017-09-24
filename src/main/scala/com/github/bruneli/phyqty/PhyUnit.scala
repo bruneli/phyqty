@@ -32,12 +32,12 @@ case class PhyUnit[D <: Dimension[_, _, _, _, _, _, _]](symbol: String, converte
     PhyUnit[D / DD](s"${this.symbol}/${that.symbol}", this.converter / that.converter)
   }
 
-  def *: (magnitude: Double): Quantity[D] = {
-    Quantity(magnitude, this)
+  def *: (magnitude: Double): ScalarQuantity[D] = {
+    ScalarQuantity(magnitude, this)
   }
 
-  def *: (magnitude: Int): Quantity[D] = {
-    Quantity(magnitude.toDouble, this)
+  def *: (magnitude: Int): ScalarQuantity[D] = {
+    ScalarQuantity(magnitude.toDouble, this)
   }
 
   def named(symbol: String): PhyUnit[D] = {

@@ -1,7 +1,7 @@
 package com.github.bruneli.phyqty
 
 /*
- * Copyright 2016 Renaud Bruneliere
+ * Copyright 2017 Renaud Bruneliere
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,101 +21,32 @@ import Dimension.{x, /}
 /**
   * @author bruneli
   */
-case class Quantity[D <: Dimension[_, _, _, _, _, _, _]](magnitude: Double, unit: PhyUnit[D]) extends Ordered[Quantity[D]] {
+trait Quantity[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityType] extends Ordered[Quantity[D, N]] {
 
-  def + (that: Quantity[D]): Quantity[D] = {
-    if (that.unit.converter == this.unit.converter) {
-      Quantity(this.magnitude + that.magnitude, unit)
-    } else {
-      Quantity(this.magnitude + that.in(unit).magnitude, unit)
-    }
-  }
+  def magnitude: Double
 
-  def - (that: Quantity[D]): Quantity[D] = {
-    if (that.unit.converter == this.unit.converter) {
-      Quantity(this.magnitude - that.magnitude, unit)
-    } else {
-      Quantity(this.magnitude - that.in(unit).magnitude, unit)
-    }
-  }
+  def unit: PhyUnit[D]
 
-  def unary_-(): Quantity[D] = {
-    Quantity(-magnitude, unit)
-  }
+  def + (that: Quantity[D, N]): Quantity[D, N]
 
-  def * (scalar: Double): Quantity[D] = {
-    Quantity(magnitude * scalar, unit)
-  }
+  def - (that: Quantity[D, N]): Quantity[D, N]
 
-  def * [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantity[D x DD] = {
-    Quantity(this.magnitude * that.magnitude, this.unit * that.unit)
-  }
+  def unary_-(): Quantity[D, N]
 
-  def / (scalar: Double): Quantity[D] = {
-    Quantity(magnitude / scalar, unit)
-  }
+  def * (scalar: Double): Quantity[D, N]
 
-  def / [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantity[D / DD] = {
-    Quantity(this.magnitude / that.magnitude, this.unit / that.unit)
-  }
+  def * [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD, N]): ScalarQuantity[D x DD]
 
-  def in(anotherUnit: PhyUnit[D]): Quantity[D] = {
-    Quantity(anotherUnit.converter.inverse(magnitude, unit.converter), anotherUnit)
-  }
+  def / (scalar: Double): Quantity[D, N]
 
-  override def toString: String = s"$magnitude $unit"
+  def / [DD <: Dimension[_, _, _, _, _, _, _]](that: ScalarQuantity[DD]): Quantity[D / DD, N]
 
-  override def compare(that: Quantity[D]): Int = {
+  def in(anotherUnit: PhyUnit[D]): Quantity[D, N]
+
+  def coordinate(i: Int): Double
+
+  override def compare(that: Quantity[D, N]): Int = {
     this.magnitude.compare(that.in(this.unit).magnitude)
-  }
-
-  override def equals(obj: Any): Boolean = obj match {
-    case that: Quantity[D] => this.compare(that) == 0
-    case _ => false
-  }
-
-}
-
-object Quantity {
-
-  implicit class DoubleToQuantity(val magnitude: Double) extends AnyVal {
-
-    def apply[D <: Dimension[_, _, _, _, _, _, _]](unit: PhyUnit[D]): Quantity[D] = {
-      Quantity(magnitude, unit)
-    }
-
-  }
-
-  implicit class IntToQuantity(val magnitude: Int) extends AnyVal {
-
-    def apply[D <: Dimension[_, _, _, _, _, _, _]](unit: PhyUnit[D]): Quantity[D] = {
-      Quantity(magnitude, unit)
-    }
-
-  }
-
-  implicit class QuantityIsNumeric[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]) extends Numeric[Quantity[D]] {
-
-    override def plus(x: Quantity[D], y: Quantity[D]): Quantity[D] = x + y
-
-    override def minus(x: Quantity[D], y: Quantity[D]): Quantity[D] = x - y
-
-    override def times(x: Quantity[D], y: Quantity[D]): Quantity[D] = ???
-
-    override def negate(x: Quantity[D]): Quantity[D] = -quantity
-
-    override def fromInt(x: Int): Quantity[D] = ???
-
-    override def toInt(x: Quantity[D]): Int = quantity.magnitude.toInt
-
-    override def toLong(x: Quantity[D]): Long = quantity.magnitude.toLong
-
-    override def toFloat(x: Quantity[D]): Float = quantity.magnitude.toFloat
-
-    override def toDouble(x: Quantity[D]): Double = quantity.magnitude
-
-    override def compare(x: Quantity[D], y: Quantity[D]): Int = x.compare(y)
-
   }
 
 }

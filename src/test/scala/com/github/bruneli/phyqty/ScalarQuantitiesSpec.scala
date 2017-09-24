@@ -21,27 +21,27 @@ import org.scalatest.{FlatSpec, Matchers}
 /**
   * @author bruneli
   */
-class QuantitiesSpec extends FlatSpec with Matchers {
+class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   import PhyUnit._
-  import Quantity._
+  import ScalarQuantity._
 
   "take" should "return another list of quantities" in {
 
-    val firstTwoQuantities = Quantities(3(m), 2(cm), 7(km)).take(2)
+    val firstTwoScalarQuantities = ScalarQuantities(3(m), 2(cm), 7(km)).take(2)
 
-    firstTwoQuantities shouldBe a[Quantities[_]]
-    firstTwoQuantities.length shouldBe 2
-    firstTwoQuantities.head shouldBe 3(m)
-    firstTwoQuantities.last shouldBe 2(cm)
+    firstTwoScalarQuantities shouldBe a[ScalarQuantities[_]]
+    firstTwoScalarQuantities.length shouldBe 2
+    firstTwoScalarQuantities.head shouldBe 3(m)
+    firstTwoScalarQuantities.last shouldBe 2(cm)
 
   }
 
   "map" should "transform quantities into others" in {
 
-    val quantities = Quantities(3(m), 2(cm), 7(km)).map(x => (x + 1(m)) * 2)
+    val quantities = ScalarQuantities(3(m), 2(cm), 7(km)).map(x => (x + 1(m)) * 2)
 
-    quantities shouldBe a[Quantities[_]]
+    quantities shouldBe a[ScalarQuantities[_]]
     quantities.length shouldBe 3
     quantities.head shouldBe 8(m)
     quantities(1) shouldBe 204(cm)
@@ -51,9 +51,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "flatMap" should "produce new quantities" in {
 
-    val quantities = Quantities(3(m), 2(cm)).flatMap(x => Quantities(x, x * 2))
+    val quantities = ScalarQuantities(3(m), 2(cm)).flatMap(x => ScalarQuantities(x, x * 2))
 
-    quantities shouldBe a[Quantities[_]]
+    quantities shouldBe a[ScalarQuantities[_]]
     quantities.length shouldBe 4
     quantities(0) shouldBe 3(m)
     quantities(1) shouldBe 6(m)
@@ -64,9 +64,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   ":+" should "append a new Quantity" in {
 
-    val quantities = Quantities(3(m), 2(cm)) :+ 6(mm)
+    val quantities = ScalarQuantities(3(m), 2(cm)) :+ 6(mm)
 
-    quantities shouldBe a[Quantities[_]]
+    quantities shouldBe a[ScalarQuantities[_]]
     quantities.length shouldBe 3
     quantities(0) shouldBe 3(m)
     quantities(1) shouldBe 2(cm)
@@ -76,9 +76,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "+:" should "prepend a new Quantity" in {
 
-    val quantities = 6(mm) +: Quantities(3(m), 2(cm))
+    val quantities = 6(mm) +: ScalarQuantities(3(m), 2(cm))
 
-    quantities shouldBe a[Quantities[_]]
+    quantities shouldBe a[ScalarQuantities[_]]
     quantities.length shouldBe 3
     quantities(0) shouldBe 6(mm)
     quantities(1) shouldBe 3(m)
@@ -88,11 +88,11 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "+" should "perform an element wise addition of two list of quantities" in {
 
-    val q1 = Quantities(2(m), 7(m))
-    val q2 = Quantities(15(cm), 1(m))
+    val q1 = ScalarQuantities(2(m), 7(m))
+    val q2 = ScalarQuantities(15(cm), 1(m))
     val sum = q1 + q2
 
-    sum shouldBe a[Quantities[_]]
+    sum shouldBe a[ScalarQuantities[_]]
     sum.length shouldBe 2
     sum(0) shouldBe 215(cm)
     sum(1) shouldBe 8(m)
@@ -101,9 +101,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   it should "add a constant to a list of quantities" in {
 
-    val sum = Quantities(2(m), 7(m)) + 3(cm)
+    val sum = ScalarQuantities(2(m), 7(m)) + 3(cm)
 
-    sum shouldBe a[Quantities[_]]
+    sum shouldBe a[ScalarQuantities[_]]
     sum.length shouldBe 2
     sum(0) shouldBe 2.03(m)
     sum(1) shouldBe 703(cm)
@@ -112,11 +112,11 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "-" should "perform an element wise subtraction of two list of quantities" in {
 
-    val q1 = Quantities(2(m), 7(m))
-    val q2 = Quantities(15(cm), 1(m))
+    val q1 = ScalarQuantities(2(m), 7(m))
+    val q2 = ScalarQuantities(15(cm), 1(m))
     val diff = q1 - q2
 
-    diff shouldBe a[Quantities[_]]
+    diff shouldBe a[ScalarQuantities[_]]
     diff.length shouldBe 2
     diff(0) shouldBe 185(cm)
     diff(1) shouldBe 6(m)
@@ -125,20 +125,20 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   it should "subtract a constant to a list of quantities" in {
 
-    val sum = Quantities(2(m), 7(m)) - 3(cm)
+    val sum = ScalarQuantities(2(m), 7(m)) - 3(cm)
 
-    sum shouldBe a[Quantities[_]]
+    sum shouldBe a[ScalarQuantities[_]]
     sum.length shouldBe 2
     sum(0) shouldBe 197(cm)
     sum(1) shouldBe 697(cm)
 
   }
   
-  "-Quantities(2(m), 3(cm))" should "be identical to Quantities(-2(m), -3(cm))" in {
+  "-ScalarQuantities(2(m), 3(cm))" should "be identical to ScalarQuantities(-2(m), -3(cm))" in {
     
-    val negate = -Quantities(2(m), 3(cm))
+    val negate = -ScalarQuantities(2(m), 3(cm))
 
-    negate shouldBe a[Quantities[_]]
+    negate shouldBe a[ScalarQuantities[_]]
     negate.length shouldBe 2
     negate(0) shouldBe -2(m)
     negate(1) shouldBe -3(cm)
@@ -147,11 +147,11 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "*" should "perform the element-wise product of two list of quantities" in {
     
-    val length = Quantities(2(m), 5(dm))
-    val force = Quantities(5(N), 8(N))
+    val length = ScalarQuantities(2(m), 5(dm))
+    val force = ScalarQuantities(5(N), 8(N))
     val work = force * length
 
-    work shouldBe a[Quantities[_]]
+    work shouldBe a[ScalarQuantities[_]]
     work.length shouldBe 2
     work(0) shouldBe 10(J)
     work(1) shouldBe 4(J)
@@ -160,9 +160,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   it should "multiply every value of a list of quantities by a constant" in {
 
-    val work = Quantities(5(N), 8(N)) * 2(m)
+    val work = ScalarQuantities(5(N), 8(N)) * 2(m)
 
-    work shouldBe a[Quantities[_]]
+    work shouldBe a[ScalarQuantities[_]]
     work.length shouldBe 2
     work(0) shouldBe 10(J)
     work(1) shouldBe 16(J)
@@ -171,9 +171,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   it should "multiply every value of a list of quantities by a scalar" in {
 
-    val work = Quantities(5(J), 8(J)) * 2
+    val work = ScalarQuantities(5(J), 8(J)) * 2
 
-    work shouldBe a[Quantities[_]]
+    work shouldBe a[ScalarQuantities[_]]
     work.length shouldBe 2
     work(0) shouldBe 10(J)
     work(1) shouldBe 16(J)
@@ -182,11 +182,11 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "/" should "perform the element-wise division of two list of quantities" in {
 
-    val length = Quantities(20(m), 16(dm))
-    val duration = Quantities(5(s), 8(s))
+    val length = ScalarQuantities(20(m), 16(dm))
+    val duration = ScalarQuantities(5(s), 8(s))
     val speed = length / duration
 
-    speed shouldBe a[Quantities[_]]
+    speed shouldBe a[ScalarQuantities[_]]
     speed.length shouldBe 2
     speed(0) shouldBe 4(m/s)
     speed(1) shouldBe 0.2(m/s)
@@ -195,9 +195,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   it should "divide every value of a list of quantities by a constant" in {
 
-    val speed = Quantities(20(m), 16(m)) / 2(s)
+    val speed = ScalarQuantities(20(m), 16(m)) / 2(s)
 
-    speed shouldBe a[Quantities[_]]
+    speed shouldBe a[ScalarQuantities[_]]
     speed.length shouldBe 2
     speed(0) shouldBe 10(m/s)
     speed(1) shouldBe 8(m/s)
@@ -206,20 +206,20 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   it should "divide every value of a list of quantities by a scalar" in {
 
-    val speed = Quantities(20(m/s), 16(m/s)) / 2
+    val speed = ScalarQuantities(20(m/s), 16(m/s)) / 2
 
-    speed shouldBe a[Quantities[_]]
+    speed shouldBe a[ScalarQuantities[_]]
     speed.length shouldBe 2
     speed(0) shouldBe 10(m/s)
     speed(1) shouldBe 8(m/s)
 
   }
 
-  "Quantities(3(m), 6(m)) in cm" should "be Quantities(300(cm), 600(cm))" in {
+  "ScalarQuantities(3(m), 6(m)) in cm" should "be ScalarQuantities(300(cm), 600(cm))" in {
 
-    val length = Quantities(3(m), 6(m)) in cm
+    val length = ScalarQuantities(3(m), 6(m)) in cm
 
-    length shouldBe a[Quantities[_]]
+    length shouldBe a[ScalarQuantities[_]]
     length.length shouldBe 2
     length.magnitudes(0) shouldBe 300.0 +- 1.0e-6
     length.magnitudes(1) shouldBe 600.0 +- 1.0e-6
@@ -228,10 +228,10 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "diff(2)" should "evaluate the difference between quantities separated by 2 indexes" in {
 
-    val length = Quantities(3(m), 6(m), 9(m), 6(m), 3(m))
+    val length = ScalarQuantities(3(m), 6(m), 9(m), 6(m), 3(m))
     val step = length.diff(2)
 
-    step shouldBe a[Quantities[_]]
+    step shouldBe a[ScalarQuantities[_]]
     step.length shouldBe 5
     step.magnitude(0).isNaN shouldBe true
     step.magnitude(1).isNaN shouldBe true
@@ -243,9 +243,9 @@ class QuantitiesSpec extends FlatSpec with Matchers {
 
   "slice" should "build a subset of quantities" in {
 
-    val subset = Quantities(3(m), 9(m), 6(m), 12(m)).slice(1, 3)
+    val subset = ScalarQuantities(3(m), 9(m), 6(m), 12(m)).slice(1, 3)
 
-    subset shouldBe a[Quantities[_]]
+    subset shouldBe a[ScalarQuantities[_]]
     subset.length shouldBe 2
     subset(0) shouldBe 9(m)
     subset(1) shouldBe 6(m)

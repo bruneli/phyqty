@@ -21,10 +21,10 @@ import org.scalatest.{FlatSpec, Matchers}
 /**
   * @author bruneli
   */
-class QuantitySpec extends FlatSpec with Matchers {
+class ScalarQuantitySpec extends FlatSpec with Matchers {
 
   import PhyUnit._
-  import Quantity._
+  import ScalarQuantity._
 
   "4 m/s + 3 m/s" should "return 7 m/s" in {
 

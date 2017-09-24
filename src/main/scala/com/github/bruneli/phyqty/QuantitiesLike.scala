@@ -16,102 +16,119 @@ package com.github.bruneli.phyqty
  * limitations under the License.
  */
 
-import Dimension.{x, /}
+import Dimension.{/, x}
+import com.github.bruneli.phyqty
 
 /**
   * @author bruneli
   */
-trait QuantitiesLike[D <: Dimension[_, _, _, _, _, _, _]] {
+trait QuantitiesLike[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityType] {
 
   val unit: PhyUnit[D]
 
   def magnitude(idx: Int): Double
 
-  def mapMagnitudes(f: Double => Double): QuantitiesLike[D]
+  def mapCoordinates(f: Double => Double): QuantitiesLike[D, N]
 
   def length: Int
 
-  def force: Quantities[D]
+  def dimension: Int
 
-  def + (that: QuantitiesLike[D]): QuantitiesLike[D]
+  def force: Quantities[D, N]
 
-  def + (that: Quantity[D]): QuantitiesLike[D]
+  def + (that: QuantitiesLike[D, N]): QuantitiesLike[D, N]
 
-  def - (that: QuantitiesLike[D]): QuantitiesLike[D]
+  def + (that: Quantity[D, N]): QuantitiesLike[D, N]
 
-  def - (that: Quantity[D]): QuantitiesLike[D]
+  def - (that: QuantitiesLike[D, N]): QuantitiesLike[D, N]
 
-  def unary_-(): QuantitiesLike[D]
+  def - (that: Quantity[D, N]): QuantitiesLike[D, N]
 
-  def * [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): QuantitiesLike[D x DD]
+  def unary_-(): QuantitiesLike[D, N]
 
-  def * [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): QuantitiesLike[D x DD]
+  def * [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD, N]): QuantitiesLike[D x DD, Scalar]
 
-  def * (scalar: Double): QuantitiesLike[D]
+  def * [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD, N]): QuantitiesLike[D x DD, Scalar]
 
-  def / [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): QuantitiesLike[D / DD]
+  def * (scalar: Double): QuantitiesLike[D, N]
 
-  def / [DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): QuantitiesLike[D / DD]
+  def / [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD, Scalar]): QuantitiesLike[D / DD, N]
 
-  def / (scalar: Double): QuantitiesLike[D]
+  def / [DD <: Dimension[_, _, _, _, _, _, _]](that: ScalarQuantity[DD]): QuantitiesLike[D / DD, N]
 
-  def in(anotherUnit: PhyUnit[D]): QuantitiesLike[D]
+  def / (scalar: Double): QuantitiesLike[D, N]
 
-  def diff(offset: Int): QuantitiesLike[D]
+  def in(anotherUnit: PhyUnit[D]): QuantitiesLike[D, N]
 
-  def dot [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantity[D x DD] = {
-    if (this.length == that.length) {
-      var sum = 0.0
-      for (idx <- 0 until length) {
-        sum += this.magnitude(idx) * that.magnitude(idx)
-      }
-      Quantity(sum, this.unit * that.unit)
-    } else {
+  def diff(offset: Int): QuantitiesLike[D, N]
+
+  def coordinate(row: Int, col: Int): Double
+
+  protected def buildQuantity[DD <: Dimension[_, _, _, _, _, _, _]](coordinates: Array[Double], unit: PhyUnit[DD]): Quantity[DD, N]
+
+  def inner [DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD, N]): Quantity[D x DD, N] = {
+    if (this.length != that.length) {
       throw new Quantities.QuantitiesDimensionException
+    } else if (this.dimension != that.dimension) {
+      throw new VectorQuantity.VectorQuantityDimensionException
+    } else {
+      val sum = Array.fill(dimension)(0.0)
+      for {i <- 0 until dimension
+           j <- 0 until length} {
+        sum(i) += this.coordinate(i, j) * that.coordinate(i, j)
+      }
+      buildQuantity(sum, this.unit * that.unit)
     }
   }
 
-  def sum: Quantity[D] = {
-    var total = 0.0
-    for (idx <- 0 until length) {
-      total += magnitude(idx)
+  def sum: Quantity[D, N] = {
+    val total = Array.fill(dimension)(0.0)
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      total(i) += coordinate(i, j)
     }
-    Quantity(total, unit)
+    buildQuantity(total, unit)
   }
 
-  def mean: Quantity[D] = {
+  def mean: Quantity[D, N] = {
     if (length == 0) {
       throw new IllegalArgumentException("quantities length is zero, cannot compute the mean")
     } else {
-      sum / length
+      buildQuantity(meanValues, unit)
     }
   }
 
-  def median: Quantity[D] = {
+  def median: Quantity[D, N] = {
     if (length == 0) {
       throw new IllegalArgumentException("quantities length is zero, cannot compute the median")
-    } else if (length % 2 == 0) {
-      val sortedValues = force.magnitudes.sorted
-      val median = (sortedValues(length / 2 - 1) + sortedValues(length / 2)) * 0.5
-      Quantity(median, unit)
     } else {
-      val median = force.magnitudes.sorted.apply(length / 2 + 1)
-      Quantity(median, unit)
+//      if (length % 2 == 0) {
+//        val sortedValues = force.magnitudes.sorted
+//        val median = (sortedValues(length / 2 - 1) + sortedValues(length / 2)) * 0.5
+//        ScalarQuantity(median, unit)
+//      } else {
+//        val median = force.magnitudes.sorted.apply(length / 2 + 1)
+//        ScalarQuantity(median, unit)
+//      }
+      buildQuantity(Array.fill(dimension)(0.0), unit)
     }
   }
 
-  def rms: Quantity[D] = {
+  def rms: Quantity[D, N] = {
     if (length < 2) {
       throw new IllegalArgumentException("quantities length lower than two, cannot compute the rms")
     } else {
       // TODO use better algo
-      val meanValue = mean.magnitude
-      var variance = 0.0
-      for (idx <- 0 until length) {
-        val delta = magnitude(idx) - meanValue
-        variance += delta * delta
+      val mean = meanValues
+      val rms = Array.fill(dimension)(0.0)
+      for (i <- 0 until dimension) {
+        for (j <- 0 until length) {
+          val delta = coordinate(i, j) - mean(i)
+          rms(i) += delta * delta
+        }
+        rms(i) = math.sqrt(rms(i))
       }
-      Quantity(math.sqrt(variance), unit)
+      buildQuantity(rms, unit)
     }
   }
 
@@ -121,6 +138,15 @@ trait QuantitiesLike[D <: Dimension[_, _, _, _, _, _, _]] {
     } else {
       (x: Double) => unit.converter.inverse(x, thatUnit.converter)
     }
+  }
+
+  private def meanValues: Array[Double] = {
+    val mean = Array.fill(dimension)(0.0)
+    for (i <- 0 until dimension) {
+      for (j <- 0 until length) mean(i) += coordinate(i, j)
+      mean(i) /= length
+    }
+    mean
   }
 
 }

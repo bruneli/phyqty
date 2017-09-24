@@ -18,7 +18,7 @@ package com.github.bruneli.phyqty
 
 import Dimension._
 import PhyUnit._
-import Quantity._
+import ScalarQuantity._
 
 /**
   * @author bruneli
@@ -35,8 +35,8 @@ object QuantitiesBenchmark extends App {
   }
 
   def vectorAdditionBenchmark(size: Int, trials: Int): Unit = {
-    val q1 = Quantities.fill(size)(2.0 (m))
-    val q2 = Quantities.fill(size)(3.0 (m))
+    val q1 = ScalarQuantities.fill(size)(2.0 (m))
+    val q2 = ScalarQuantities.fill(size)(3.0 (m))
     val quantitiesMillis = performanceEstimate(quantitiesAddition(q1, q2), trials = trials, warmupTrials = trials)
     println(s"Adding two quantities collections of $size elements took in average $quantitiesMillis milliseconds in average")
     val q3 = Vector.fill(size)(2.0 (m))
@@ -46,17 +46,17 @@ object QuantitiesBenchmark extends App {
     println(s"Quantities are ${math.round(vectorMillis / quantitiesMillis * 100) / 100.0} faster than Vector of Quantity")
   }
 
-  def quantitiesAddition(q1: Quantities[Length], q2: Quantities[Length])(): Unit = {
+  def quantitiesAddition(q1: ScalarQuantities[Length], q2: ScalarQuantities[Length])(): Unit = {
     q1 + q2
   }
 
-  def quantityVectorAddition(q1: Vector[Quantity[Length]], q2: Vector[Quantity[Length]])(): Unit = {
+  def quantityVectorAddition(q1: Vector[ScalarQuantity[Length]], q2: Vector[ScalarQuantity[Length]])(): Unit = {
     (q1, q2).zipped.map(_ + _)
   }
 
   def chainOfOperationsBenchmark(size: Int, trials: Int): Unit = {
-    val positions = Quantities.iterate(0 (m), size)(_ + 1(m))
-    val timestamps = Quantities.iterate(0 (s), size)(_ + 1(s))
+    val positions = ScalarQuantities.iterate(0 (m), size)(_ + 1(m))
+    val timestamps = ScalarQuantities.iterate(0 (s), size)(_ + 1(s))
     val speed = 1 (m / s)
     val offset = 0 (m)
     val sigma = 20 (cm)
@@ -69,21 +69,21 @@ object QuantitiesBenchmark extends App {
     //val vectorMillis = performanceEstimate(vectorLeastSquaresSum(position.toVector, time.toVector, speed, offset, sigma),
     //  trials = trials, warmupTrials = trials)
     //println(s"Chaining operations with vector of quantities of $size elements took in average $vectorMillis milliseconds in average")
-    println(s"QuantitiesView are ${math.round(quantitiesMillis / quantitiesViewMillis * 100) / 100.0} faster than Quantities")
+    println(s"ScalarQuantitiesView are ${math.round(quantitiesMillis / quantitiesViewMillis * 100) / 100.0} faster than Quantities")
   }
 
-  def leastSquaresSum(position: QuantitiesLike[Length], time: QuantitiesLike[Time], speed: Quantity[Speed],
-                      offset: Quantity[Length], sigma: Quantity[Length])(): Unit = {
+  def leastSquaresSum(position: QuantitiesLike[Length, Scalar], time: QuantitiesLike[Time, Scalar], speed: ScalarQuantity[Speed],
+                      offset: ScalarQuantity[Length], sigma: ScalarQuantity[Length])(): Unit = {
     val expectedPosition = time * speed + offset
     val residual = (position - expectedPosition) / sigma
     (residual * residual).sum
   }
 
-  def vectorLeastSquaresSum(position: Vector[Quantity[Length]], time: Vector[Quantity[Time]], speed: Quantity[Speed],
-                            offset: Quantity[Length], sigma: Quantity[Length])(): Unit = {
+  def vectorLeastSquaresSum(position: Vector[ScalarQuantity[Length]], time: Vector[ScalarQuantity[Time]], speed: ScalarQuantity[Speed],
+                            offset: ScalarQuantity[Length], sigma: ScalarQuantity[Length])(): Unit = {
     val expectedPosition = time.map(_ * speed + offset)
     val residualSquared = (position, expectedPosition).zipped.map((l, r) => (l - r) * (l - r) / sigma / sigma)
-    residualSquared.foldLeft(Quantity(0.0, residualSquared(0).unit)) {
+    residualSquared.foldLeft(ScalarQuantity(0.0, residualSquared(0).unit)) {
       case (sum, current) => sum + current
     }
   }

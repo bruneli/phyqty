@@ -23,166 +23,166 @@ import Dimension.DimensionLess
   */
 object Math {
 
-  def ceil[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]): Quantity[D] = {
+  def ceil[D <: Dimension[_, _, _, _, _, _, _]](quantity: ScalarQuantity[D]): ScalarQuantity[D] = {
     applyFunction(quantity, math.ceil)
   }
 
-  def ceil[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D]): QuantitiesLike[D] = {
-    quantities.mapMagnitudes(math.ceil)
+  def ceil[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D, Scalar]): QuantitiesLike[D, Scalar] = {
+    quantities.mapCoordinates(math.ceil)
   }
 
-  def floor[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]): Quantity[D] = {
+  def floor[D <: Dimension[_, _, _, _, _, _, _]](quantity: ScalarQuantity[D]): ScalarQuantity[D] = {
     applyFunction(quantity, math.floor)
   }
 
-  def floor[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D]): QuantitiesLike[D] = {
-    quantities.mapMagnitudes(math.floor)
+  def floor[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D, Scalar]): QuantitiesLike[D, Scalar] = {
+    quantities.mapCoordinates(math.floor)
   }
 
-  def abs[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D]): Quantity[D] = {
+  def abs[D <: Dimension[_, _, _, _, _, _, _]](quantity: ScalarQuantity[D]): ScalarQuantity[D] = {
     applyFunction(quantity, math.abs)
   }
 
-  def abs[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D]): QuantitiesLike[D] = {
-    quantities.mapMagnitudes(math.abs)
+  def abs[D <: Dimension[_, _, _, _, _, _, _]](quantities: QuantitiesLike[D, Scalar]): QuantitiesLike[D, Scalar] = {
+    quantities.mapCoordinates(math.abs)
   }
 
-  def sqrt(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def sqrt(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.sqrt)
   }
 
-  def sqrt(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.sqrt)
+  def sqrt(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.sqrt)
   }
 
-  def cbrt(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def cbrt(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.cbrt)
   }
 
-  def cbrt(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.cbrt)
+  def cbrt(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.cbrt)
   }
 
-  def exp(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def exp(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.exp)
   }
 
-  def exp(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.exp)
+  def exp(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.exp)
   }
 
-  def log(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def log(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.log)
   }
 
-  def log(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.log)
+  def log(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.log)
   }
 
-  def log10(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def log10(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.log10)
   }
 
-  def log10(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.log10)
+  def log10(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.log10)
   }
 
-  def sin(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def sin(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.sin)
   }
 
-  def sin(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.sin)
+  def sin(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.sin)
   }
 
-  def cos(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def cos(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.cos)
   }
 
-  def cos(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.cos)
+  def cos(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.cos)
   }
 
-  def tan(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def tan(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.tan)
   }
 
-  def tan(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.tan)
+  def tan(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.tan)
   }
 
-  def asin(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def asin(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.asin)
   }
 
-  def asin(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.asin)
+  def asin(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.asin)
   }
 
-  def acos(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def acos(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.acos)
   }
 
-  def acos(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.acos)
+  def acos(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.acos)
   }
 
-  def atan(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def atan(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.atan)
   }
 
-  def atan(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.atan)
+  def atan(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.atan)
   }
 
-  def sinh(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def sinh(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.sinh)
   }
 
-  def sinh(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.sinh)
+  def sinh(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.sinh)
   }
 
-  def cosh(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def cosh(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.cosh)
   }
 
-  def cosh(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.cosh)
+  def cosh(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.cosh)
   }
 
-  def tanh(quantity: Quantity[DimensionLess]): Quantity[DimensionLess] = {
+  def tanh(quantity: ScalarQuantity[DimensionLess]): ScalarQuantity[DimensionLess] = {
     applyFunction(quantity, math.tanh)
   }
 
-  def tanh(quantities: QuantitiesLike[DimensionLess]): QuantitiesLike[DimensionLess] = {
-    quantities.mapMagnitudes(math.tanh)
+  def tanh(quantities: QuantitiesLike[DimensionLess, Scalar]): QuantitiesLike[DimensionLess, Scalar] = {
+    quantities.mapCoordinates(math.tanh)
   }
 
-  def max[D <: Dimension[_, _, _, _, _, _, _]](q1: Quantity[D], q2: Quantity[D]): Quantity[D] = {
+  def max[D <: Dimension[_, _, _, _, _, _, _]](q1: ScalarQuantity[D], q2: ScalarQuantity[D]): ScalarQuantity[D] = {
     val q3 = q2.in(q1.unit)
     q1.copy(magnitude = math.max(q1.magnitude, q3.magnitude))
   }
 
-  def max[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D], q2: QuantitiesLike[D]): QuantitiesLike[D] = {
+  def max[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D, Scalar], q2: QuantitiesLike[D, Scalar]): QuantitiesLike[D, Scalar] = {
     applyArity2Function(q1, q2)(math.max)
   }
 
-  def min[D <: Dimension[_, _, _, _, _, _, _]](q1: Quantity[D], q2: Quantity[D]): Quantity[D] = {
+  def min[D <: Dimension[_, _, _, _, _, _, _]](q1: ScalarQuantity[D], q2: ScalarQuantity[D]): ScalarQuantity[D] = {
     val q3 = q2.in(q1.unit)
     q1.copy(magnitude = math.min(q1.magnitude, q3.magnitude))
   }
 
-  def min[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D], q2: QuantitiesLike[D]): QuantitiesLike[D] = {
+  def min[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D, Scalar], q2: QuantitiesLike[D, Scalar]): QuantitiesLike[D, Scalar] = {
     applyArity2Function(q1, q2)(math.min)
   }
 
-  def applyFunction[D <: Dimension[_, _, _, _, _, _, _]](quantity: Quantity[D], function: Double => Double): Quantity[D] = {
-    Quantity(function(quantity.magnitude), quantity.unit)
+  def applyFunction[D <: Dimension[_, _, _, _, _, _, _]](quantity: ScalarQuantity[D], function: Double => Double): ScalarQuantity[D] = {
+    ScalarQuantity(function(quantity.magnitude), quantity.unit)
   }
 
-  def applyArity2Function[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D], q2: QuantitiesLike[D])(
-    function: (Double, Double) => Double): Quantities[D] = {
+  def applyArity2Function[D <: Dimension[_, _, _, _, _, _, _]](q1: QuantitiesLike[D, Scalar], q2: QuantitiesLike[D, Scalar])(
+    function: (Double, Double) => Double): ScalarQuantities[D] = {
     if (q1.length != q2.length) {
       throw new Quantities.QuantitiesDimensionException
     } else {
@@ -191,7 +191,7 @@ object Math {
       for (idx <- magnitudes.indices) {
         magnitudes(idx) = function(q1.magnitude(idx), q3.magnitude(idx))
       }
-      Quantities(magnitudes, q1.unit)
+      ScalarQuantities(magnitudes, q1.unit)
     }
   }
 

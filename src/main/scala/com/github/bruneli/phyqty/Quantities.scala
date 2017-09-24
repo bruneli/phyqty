@@ -19,195 +19,179 @@ package com.github.bruneli.phyqty
 import Quantities.QuantitiesDimensionException
 
 import scala.collection.generic.CanBuildFrom
-import scala.collection.{IndexedSeqLike, mutable}
-
-import Dimension.{x, /}
+import Dimension.{/, x}
 
 /**
   * @author bruneli
   */
-trait Quantities[D <: Dimension[_, _, _, _, _, _, _]] extends IndexedSeq[Quantity[D]]
-  with IndexedSeqLike[Quantity[D], Quantities[D]]
-  with QuantitiesLike[D] {
-  self =>
+trait Quantities[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityType] extends QuantitiesLike[D, N] {
 
-  val magnitudes: Array[Double]
+  type Q[DD <: Dimension[_, _, _, _, _, _, _]] <: Quantities[DD, N]
 
-  override def length: Int = magnitudes.length
-
-  override def newBuilder: mutable.Builder[Quantity[D], Quantities[D]] = {
-    Quantities.newBuilder
-  }
-
-  override def magnitude(idx: Int) = magnitudes(idx)
-
-  override def mapMagnitudes(f: Double => Double): Quantities[D] = {
-    val mappedMagnitudes = new Array[Double](length)
-    for (idx <- magnitudes.indices) {
-      mappedMagnitudes(idx) = f(magnitudes(idx))
+  override def mapCoordinates(f: Double => Double): Q[D] = {
+    val mappedCoordinates = new Array[Double](length * dimension)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      mappedCoordinates(k) = f(coordinate(i, j))
+      k += 1
     }
-    Quantities(mappedMagnitudes, unit)
+    buildQuantities(mappedCoordinates, unit)
   }
 
-  override def apply(idx: Int): Quantity[D] = Quantity(magnitude(idx), unit)
-
-  override def view = new QuantitiesView[D, Quantities[D]] {
-    val unit = self.unit
-    protected lazy val underlying = self.repr
-
-    override def iterator = self.iterator
-
-    override def length = self.length
-
-    override def magnitude(idx: Int) = self.magnitudes(idx)
-
-    override def apply(idx: Int) = self.apply(idx)
-  }
-
-  override def view(from: Int, until: Int) = view.slice(from, until)
-
-  override def force: Quantities[D] = this
-
-  override def sum[B >: Quantity[D]](implicit num: Numeric[B]): B = {
-    super[QuantitiesLike].sum
-  }
-
-  override def +(that: QuantitiesLike[D]): Quantities[D] = {
+  override def +(that: QuantitiesLike[D, N]): Q[D] = {
     if (this.length == that.length) {
       val uniformize: Double => Double = converter(that.unit)
-      val diff = new Array[Double](this.length)
-      for (idx <- magnitudes.indices) {
-        diff(idx) = this.magnitudes(idx) + uniformize(that.magnitude(idx))
+      val sum = new Array[Double](this.dimension * this.length)
+      var k = 0
+      for {i <- 0 until dimension
+           j <- 0 until length} {
+        sum(k) = this.coordinate(i, j) + uniformize(that.coordinate(i, j))
+        k += 1
       }
-      Quantities(diff, unit)
+      buildQuantities(sum, unit)
     } else {
       throw new QuantitiesDimensionException
     }
   }
 
-  override def +(that: Quantity[D]): Quantities[D] = {
-    val constant = converter(that.unit)(that.magnitude)
-    Quantities(magnitudes.map(_ + constant), unit)
+  override def +(that: Quantity[D, N]): Q[D] = {
+    val constant = that.in(unit)
+    val sum = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      sum(k) = this.coordinate(i, j) + constant.coordinate(i)
+      k += 1
+    }
+    buildQuantities(sum, unit)
   }
 
-  override def -(that: QuantitiesLike[D]): Quantities[D] = {
+  override def -(that: QuantitiesLike[D, N]): Q[D] = {
     if (this.length == that.length) {
       val uniformize: Double => Double = converter(that.unit)
-      val diff = new Array[Double](this.length)
-      for (idx <- magnitudes.indices) {
-        diff(idx) = this.magnitudes(idx) - uniformize(that.magnitude(idx))
+      val diff = new Array[Double](this.dimension * this.length)
+      var k = 0
+      for {i <- 0 until dimension
+           j <- 0 until length} {
+        diff(k) = this.coordinate(i, j) - uniformize(that.coordinate(i, j))
+        k += 1
       }
-      Quantities(diff, unit)
+      buildQuantities(diff, unit)
     } else {
       throw new QuantitiesDimensionException
     }
   }
 
-  override def -(that: Quantity[D]): Quantities[D] = {
-    val constant = converter(that.unit)(that.magnitude)
-    Quantities(magnitudes.map(_ - constant), unit)
+  override def -(that: Quantity[D, N]): Q[D] = {
+    val constant = that.in(unit)
+    val diff = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      diff(k) = this.coordinate(i, j) - constant.coordinate(i)
+      k += 1
+    }
+    buildQuantities(diff, unit)
   }
 
-  override def unary_-(): Quantities[D] = {
-    Quantities(magnitudes.map(x => -x), unit)
+  override def unary_-(): Q[D] = {
+    val opposite = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      opposite(k) = -coordinate(i, j)
+      k += 1
+    }
+    buildQuantities(opposite, unit)
   }
 
-  override def *[DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantities[D x DD] = {
+  override def *[DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD, N]): ScalarQuantities[D x DD] = {
     if (this.length == that.length) {
-      val prod = new Array[Double](this.length)
-      for (idx <- magnitudes.indices) {
-        prod(idx) = this.magnitudes(idx) * that.magnitude(idx)
+      val prod = Array.fill(this.length)(0.0)
+      for {i <- 0 until dimension
+           j <- 0 until length} {
+        prod(j) += this.coordinate(i, j) * that.coordinate(i, j)
       }
-      Quantities(prod, this.unit * that.unit)
+      ScalarQuantities(prod, this.unit * that.unit)
     } else {
       throw new QuantitiesDimensionException
     }
   }
 
-  override def *[DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantities[D x DD] = {
-    Quantities(magnitudes.map(_ * that.magnitude), this.unit * that.unit)
+  override def *[DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD, N]): ScalarQuantities[D x DD] = {
+    val prod = Array.fill(this.length)(0.0)
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      prod(j) += this.coordinate(i, j) * that.coordinate(i)
+    }
+    ScalarQuantities(prod, this.unit * that.unit)
   }
 
-  override def *(scalar: Double): Quantities[D] = {
-    Quantities(magnitudes.map(_ * scalar), unit)
+  override def *(scalar: Double): Q[D] = {
+    val prod = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      prod(k) = coordinate(i, j) * scalar
+      k += 1
+    }
+    buildQuantities(prod, unit)
   }
 
-  override def /[DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD]): Quantities[D / DD] = {
+  override def /[DD <: Dimension[_, _, _, _, _, _, _]](that: QuantitiesLike[DD, Scalar]): Q[D / DD] = {
     if (this.length == that.length) {
-      val ratio = new Array[Double](this.length)
-      for (idx <- magnitudes.indices) {
-        ratio(idx) = this.magnitudes(idx) / that.magnitude(idx)
+      val ratio = new Array[Double](this.dimension * this.length)
+      var k = 0
+      for {i <- 0 until dimension
+           j <- 0 until length} {
+        ratio(k) = this.coordinate(i, j) / that.magnitude(j)
+        k += 1
       }
-      Quantities(ratio, this.unit / that.unit)
+      buildQuantities(ratio, this.unit / that.unit)
     } else {
       throw new QuantitiesDimensionException
     }
   }
 
-  override def /[DD <: Dimension[_, _, _, _, _, _, _]](that: Quantity[DD]): Quantities[D / DD] = {
-    Quantities(magnitudes.map(_ / that.magnitude), this.unit / that.unit)
+  override def /[DD <: Dimension[_, _, _, _, _, _, _]](that: ScalarQuantity[DD]): Q[D / DD] = {
+    val ratio = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      ratio(k) = this.coordinate(i, j) / that.magnitude
+      k += 1
+    }
+    buildQuantities(ratio, this.unit / that.unit)
   }
 
-  override def /(scalar: Double): Quantities[D] = {
-    Quantities(magnitudes.map(_ / scalar), unit)
+  override def /(scalar: Double): Q[D] = {
+    val ratio = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      ratio(k) = this.coordinate(i, j) / scalar
+      k += 1
+    }
+    buildQuantities(ratio, unit)
   }
 
-  override def in(anotherUnit: PhyUnit[D]): Quantities[D] = {
-    Quantities(magnitudes.map(x => anotherUnit.converter.inverse(x, unit.converter)), anotherUnit)
+  override def in(anotherUnit: PhyUnit[D]): Q[D] = {
+    val converted = new Array[Double](this.dimension * this.length)
+    var k = 0
+    for {i <- 0 until dimension
+         j <- 0 until length} {
+      converted(k) = anotherUnit.converter.inverse(this.coordinate(i, j), unit.converter)
+      k += 1
+    }
+    buildQuantities(converted, anotherUnit)
   }
 
-  override def diff(offset: Int): Quantities[D] = {
-    view.diff(offset).force
-  }
+  protected def buildQuantities[DD <: Dimension[_, _, _, _, _, _, _]](coordinates: Array[Double], unit: PhyUnit[DD]): Q[DD]
 
 }
 
 object Quantities {
-
-  def apply[D <: Dimension[_, _, _, _, _, _, _]](thisMagnitudes: Array[Double], thisUnit: PhyUnit[D]): Quantities[D] = {
-    new Quantities[D] {
-
-      lazy val magnitudes = thisMagnitudes
-
-      override val unit: PhyUnit[D] = thisUnit
-
-    }
-  }
-
-  def fill[D <: Dimension[_, _, _, _, _, _, _]](n: Int)(elem: => Quantity[D]): Quantities[D] = {
-    Quantities(Array.fill(n)(elem.magnitude), elem.unit)
-  }
-
-  def iterate[D <: Dimension[_, _, _, _, _, _, _]](start: Quantity[D], len: Int)(
-    f: Quantity[D] => Quantity[D]): Quantities[D] = {
-    val magnitudes = Array.iterate(start.magnitude, len)(previous => f(Quantity(previous, start.unit)).magnitude)
-    Quantities(magnitudes, start.unit)
-  }
-
-  def fromVector[D <: Dimension[_, _, _, _, _, _, _]](quantities: Vector[Quantity[D]]): Quantities[D] = {
-    if (quantities.isEmpty) {
-      Quantities(Array.emptyDoubleArray, PhyUnit[D]("a.u."))
-    } else {
-      val unit = quantities.head.unit
-      Quantities(quantities.map(_.in(unit).magnitude).toArray, unit)
-    }
-  }
-
-  def apply[D <: Dimension[_, _, _, _, _, _, _]](quantities: Quantity[D]*): Quantities[D] = {
-    fromVector(quantities.toVector)
-  }
-
-  def newBuilder[D <: Dimension[_, _, _, _, _, _, _]]: mutable.Builder[Quantity[D], Quantities[D]] = {
-    Vector.newBuilder[Quantity[D]].mapResult(Quantities.fromVector)
-  }
-
-  implicit def canBuildFrom[D <: Dimension[_, _, _, _, _, _, _]]: CanBuildFrom[Quantities[_], Quantity[D], Quantities[D]] = {
-    new CanBuildFrom[Quantities[_], Quantity[D], Quantities[D]] {
-      def apply(from: Quantities[_]) = newBuilder[D]
-
-      def apply() = newBuilder[D]
-    }
-  }
 
   class QuantitiesDimensionException extends RuntimeException("quantities vectors must be equal in size")
 

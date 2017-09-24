@@ -23,7 +23,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class PhyUnitSpec extends FlatSpec with Matchers {
 
   import PhyUnit._
-  import Quantity._
+  import ScalarQuantity._
   import DecimalMultiplier._
 
   "m" should "be equal to metre but different from centimetre" in {
