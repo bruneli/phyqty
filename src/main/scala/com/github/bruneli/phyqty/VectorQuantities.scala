@@ -56,9 +56,27 @@ case class VectorQuantities[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityTy
     super[Quantities].sum.asInstanceOf[B]
   }
 
-  override def force: VectorQuantities[D, N] = this
+  override def view = new VectorQuantitiesView[D, N, VectorQuantities[D, N]] {
+    val unit = self.unit
+    val dimension = self.dimension
+    protected lazy val underlying = self.repr
 
-  override def diff(offset: Int): VectorQuantities[D, N] = ???
+    override def iterator = self.iterator
+
+    override def length = self.length
+
+    override def apply(j: Int) = self.apply(j)
+
+    override def coordinate(i: Int, j: Int): Double = self.coordinate(i, j)
+  }
+
+  override def view(from: Int, until: Int) = view.slice(from, until)
+
+  override def diff(offset: Int): VectorQuantities[D, N] = {
+    view.diff(offset).force
+  }
+
+  override def force: VectorQuantities[D, N] = this
 
   def coordinate(row: Int, col: Int): Double = {
     coordinates(row * length + col)

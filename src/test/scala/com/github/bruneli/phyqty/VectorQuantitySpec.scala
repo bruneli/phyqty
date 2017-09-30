@@ -125,7 +125,7 @@ class VectorQuantitySpec extends FlatSpec with Matchers {
 
   }
 
-  "force dot distance" should "return a scalar work" in {
+  "force * distance" should "return a scalar work" in {
 
     val force = VectorQuantity(2(N), -3(N), 4(N))
     val distance = VectorQuantity(-4(m), 2(m), 5(m))

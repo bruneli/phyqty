@@ -26,7 +26,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
   import PhyUnit._
   import ScalarQuantity._
 
-  "take" should "return another list of quantities" in {
+  "take" should "return another list of scalar quantities" in {
 
     val firstTwoScalarQuantities = ScalarQuantities(3(m), 2(cm), 7(km)).take(2)
 
@@ -37,7 +37,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "map" should "transform quantities into others" in {
+  "map" should "transform scalar quantities into others" in {
 
     val quantities = ScalarQuantities(3(m), 2(cm), 7(km)).map(x => (x + 1(m)) * 2)
 
@@ -49,7 +49,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "flatMap" should "produce new quantities" in {
+  "flatMap" should "produce new scalar quantities" in {
 
     val quantities = ScalarQuantities(3(m), 2(cm)).flatMap(x => ScalarQuantities(x, x * 2))
 
@@ -62,7 +62,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  ":+" should "append a new Quantity" in {
+  ":+" should "append a new scalar quantity" in {
 
     val quantities = ScalarQuantities(3(m), 2(cm)) :+ 6(mm)
 
@@ -74,7 +74,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "+:" should "prepend a new Quantity" in {
+  "+:" should "prepend a new scalar quantity" in {
 
     val quantities = 6(mm) +: ScalarQuantities(3(m), 2(cm))
 
@@ -86,7 +86,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "+" should "perform an element wise addition of two list of quantities" in {
+  "+" should "perform an element wise addition of two list of scalar quantities" in {
 
     val q1 = ScalarQuantities(2(m), 7(m))
     val q2 = ScalarQuantities(15(cm), 1(m))
@@ -99,7 +99,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  it should "add a constant to a list of quantities" in {
+  it should "add a constant to a list of scalar quantities" in {
 
     val sum = ScalarQuantities(2(m), 7(m)) + 3(cm)
 
@@ -110,7 +110,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "-" should "perform an element wise subtraction of two list of quantities" in {
+  "-" should "perform an element wise subtraction of two list of scalar quantities" in {
 
     val q1 = ScalarQuantities(2(m), 7(m))
     val q2 = ScalarQuantities(15(cm), 1(m))
@@ -123,7 +123,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  it should "subtract a constant to a list of quantities" in {
+  it should "subtract a constant to a list of scalar quantities" in {
 
     val sum = ScalarQuantities(2(m), 7(m)) - 3(cm)
 
@@ -145,7 +145,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
     
   }
 
-  "*" should "perform the element-wise product of two list of quantities" in {
+  "*" should "perform the element-wise product of two lists of scalar quantities" in {
     
     val length = ScalarQuantities(2(m), 5(dm))
     val force = ScalarQuantities(5(N), 8(N))
@@ -158,7 +158,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  it should "multiply every value of a list of quantities by a constant" in {
+  it should "multiply every value of a list of scalar quantities by a constant" in {
 
     val work = ScalarQuantities(5(N), 8(N)) * 2(m)
 
@@ -169,7 +169,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  it should "multiply every value of a list of quantities by a scalar" in {
+  it should "multiply every value of a list of scalar quantities by a scalar" in {
 
     val work = ScalarQuantities(5(J), 8(J)) * 2
 
@@ -180,7 +180,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "/" should "perform the element-wise division of two list of quantities" in {
+  "/" should "perform the element-wise division of two lists of scalar quantities" in {
 
     val length = ScalarQuantities(20(m), 16(dm))
     val duration = ScalarQuantities(5(s), 8(s))
@@ -193,7 +193,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  it should "divide every value of a list of quantities by a constant" in {
+  it should "divide every value of a list of scalar quantities by a constant" in {
 
     val speed = ScalarQuantities(20(m), 16(m)) / 2(s)
 
@@ -204,7 +204,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  it should "divide every value of a list of quantities by a scalar" in {
+  it should "divide every value of a list of scalar quantities by a scalar" in {
 
     val speed = ScalarQuantities(20(m/s), 16(m/s)) / 2
 
@@ -226,7 +226,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "diff(2)" should "evaluate the difference between quantities separated by 2 indexes" in {
+  "diff(2)" should "evaluate the difference between scalar quantities separated by 2 indexes" in {
 
     val length = ScalarQuantities(3(m), 6(m), 9(m), 6(m), 3(m))
     val step = length.diff(2)
@@ -241,7 +241,7 @@ class ScalarQuantitiesSpec extends FlatSpec with Matchers {
 
   }
 
-  "slice" should "build a subset of quantities" in {
+  "slice" should "build a subset of scalar quantities" in {
 
     val subset = ScalarQuantities(3(m), 9(m), 6(m), 12(m)).slice(1, 3)
 
