@@ -109,7 +109,7 @@ case class VectorQuantity[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityType
     }
   }
 
-  override def toString: String = s"$magnitude $unit"
+  override def toString: String = s"(${coordinates.mkString(",")}) $unit"
 
   override def equals(obj: Any): Boolean = obj match {
     case that: VectorQuantity[D, N] => this.compare(that) == 0
@@ -131,6 +131,17 @@ object VectorQuantity {
                                                  z: ScalarQuantity[D]): VectorQuantity[D, Vector3D] = {
     val coordinates = Array(x.magnitude, y.in(x.unit).magnitude, z.in(x.unit).magnitude)
     new VectorQuantity[D, Vector3D](coordinates, x.unit)
+  }
+
+  def vector[D <: Dimension[_, _, _, _, _, _, _]](x: ScalarQuantity[D],
+                                                  y: ScalarQuantity[D]): VectorQuantity[D, Vector2D] = {
+    apply(x, y)
+  }
+
+  def vector[D <: Dimension[_, _, _, _, _, _, _]](x: ScalarQuantity[D],
+                                                  y: ScalarQuantity[D],
+                                                  z: ScalarQuantity[D]): VectorQuantity[D, Vector3D] = {
+    apply(x, y, z)
   }
 
   def newBuilder[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityType]: mutable.Builder[ScalarQuantity[D], VectorQuantity[D, N]] = {

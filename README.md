@@ -11,11 +11,11 @@ The objective is twofold
 Defining a scalar or vector quantity
 
     >>> import com.github.bruneli.phyqty.ScalarQuantity._
-    >>> import com.github.bruneli.phyqty.VectorQuantity
+    >>> import com.github.bruneli.phyqty.VectorQuantity._
     >>> import com.github.bruneli.phyqty.PhyUnit._
-    >>> val x0 = VectorQuantity(1.56(m), 2.5(cm))
+    >>> val x0 = vector(1.56(m), 2.5(cm))
     >>> val t0 = 2(min) // scalar quantity
-    >>> val x1 = VectorQuantity(20.8(m), -39.5(m))
+    >>> val x1 = vector(20.8(m), -39.5(m))
     >>> val t1 = t0 * 2
     >>> val dx = x1 - x0
     >>> dx.magnitude // distance
@@ -26,7 +26,7 @@ Defining a scalar or vector quantity
 
 Creating custom units
 
-    >>> import com.github.bruneli.phyqty.Quantity._
+    >>> import com.github.bruneli.phyqty.ScalarQuantity._
     >>> import com.github.bruneli.phyqty.PhyUnit._
     >>> import com.github.bruneli.phyqty.DecimalMultiplier._
     >>> val kW = kilo(watt)
@@ -35,18 +35,18 @@ Creating custom units
 
 Working with collection of scalar or vector quantities (measurements)
 
-    >>> import com.github.bruneli.phyqty.Quantity._
+    >>> import com.github.bruneli.phyqty.ScalarQuantity._
     >>> import com.github.bruneli.phyqty.PhyUnit._
-    >>> import import com.github.bruneli.phyqty.ScalarQuantities
-    >>> import import com.github.bruneli.phyqty.VectorQuantities
+    >>> import com.github.bruneli.phyqty.ScalarQuantities
+    >>> import com.github.bruneli.phyqty.VectorQuantities
     >>> val dt = 100(ms)
     >>> val x = ScalarQuantities(2(m), 3.5(m), 5(m), 10(m))
-    >>> val dx = positions.diff(1)
+    >>> val dx = x.diff(1)
     >>> val y = ScalarQuantities(4(m), -2.5(m), -50(m), -25(m))
     >>> val positions = VectorQuantities(x, y)
     >>> val v = positions.diff(1).dropna / dt
     >>> val meanSpeed = v.mean.magnitude
-    >>> val averageSpeed = (positions.last - positions.head).magnitude / (positions.length - 1) / measurementPeriod
+    >>> val averageSpeed = (positions.last - positions.head) / (positions.length - 1) / dt
 
 ## Usage
 

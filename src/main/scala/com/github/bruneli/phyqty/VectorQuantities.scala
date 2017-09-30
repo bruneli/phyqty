@@ -82,6 +82,10 @@ case class VectorQuantities[D <: Dimension[_, _, _, _, _, _, _], N <: QuantityTy
     coordinates(row * length + col)
   }
 
+  def dropna: VectorQuantities[D, N] = {
+    this.filterNot(_.magnitude.isNaN)
+  }
+
   protected def buildQuantity[DD <: Dimension[_, _, _, _, _, _, _]](coordinates: Array[Double], unit: PhyUnit[DD]): VectorQuantity[DD, N] = {
     VectorQuantity(coordinates, unit)
   }

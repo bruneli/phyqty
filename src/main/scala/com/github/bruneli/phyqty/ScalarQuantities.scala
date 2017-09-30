@@ -74,6 +74,10 @@ case class ScalarQuantities[D <: Dimension[_, _, _, _, _, _, _]](magnitudes: Arr
     magnitudes(col)
   }
 
+  def dropna: ScalarQuantities[D] = {
+    this.filterNot(_.magnitude.isNaN)
+  }
+
   protected def buildQuantity[DD <: Dimension[_, _, _, _, _, _, _]](coordinates: Array[Double], unit: PhyUnit[DD]): ScalarQuantity[DD] = {
     ScalarQuantity(coordinates(0), unit)
   }
